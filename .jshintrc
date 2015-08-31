@@ -8,10 +8,15 @@
   "undef": true,
   "unused": true,
   "validthis": true,
-  "jasmine": true,
+  "expr": true,
   "globals": {
     "angular": false,
     "inject": false,
-    "module": false
+    "module": false,
+    "describe": false,
+    "beforeEach": false,
+    "it": false,
+    "expect": false,
+    "sinon": false
   }
 }

@@ -31,11 +31,7 @@ module.exports = function(config) {
 
     autoWatch: false,
 
-    frameworks: ['jasmine', 'angular-filesort'],
-
-    angularFilesort: {
-      whitelist: [path.join(conf.paths.src, '/**/!(*.html|*.spec|*.mock).js')]
-    },
+    frameworks: ['mocha', 'chai', 'sinon', 'sinon-chai'],
 
     ngHtml2JsPreprocessor: {
       stripPrefix: 'src/',
@@ -46,13 +42,25 @@ module.exports = function(config) {
 
     plugins : [
       'karma-phantomjs-launcher',
-      'karma-angular-filesort',
-      'karma-jasmine',
+      'karma-mocha',
+      'karma-chai-plugins',
+      'karma-sinon',
+      'karma-coverage',
+      'karma-mocha-reporter',
       'karma-ng-html2js-preprocessor'
     ],
 
     preprocessors: {
-      'src/**/*.html': ['ng-html2js']
+      'src/**/*.html': ['ng-html2js'],
+      'src/app/**/!(*spec).js': ['coverage']
+    },
+
+    reporters: ['coverage', 'mocha'],
+
+    coverageReporter: {
+      type: 'lcovonly',
+      dir: 'coverage',
+      subdir: '.'
     }
   };
 
