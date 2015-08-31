@@ -24,7 +24,13 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <div class="container" ng-controller="MainController as main">Hello world!</div>
+    <div class="container" ng-controller="MainController as main">
+
+      <input type="checkbox" ng-model="main.visible" /> Visible?
+      <input type="checkbox" ng-model="main.allowEdit" /> Allow edit?
+
+      <div ng-if="main.visible" if-has-permission="main.allowEdit">Hello</div>
+    </div>
 
 
     <!-- build:js(src) scripts/vendor.js -->

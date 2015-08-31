@@ -14,6 +14,9 @@
 
       userPermissions.removeByName('B');
       console.log('Removed one perm:', userPermissions.get());
+
+      this.visible = true;
+      this.allowEdit = true;
     });
 
 })();
