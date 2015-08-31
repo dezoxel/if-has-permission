@@ -26,10 +26,9 @@
 
     <div class="container" ng-controller="MainController as main">
 
-      <input type="checkbox" ng-model="main.visible" /> Visible?
-      <input type="checkbox" ng-model="main.allowEdit" /> Allow edit?
-
-      <div ng-if="main.visible" if-has-permission="main.allowEdit">Hello</div>
+      <div if-has-permission="['view', 'edit']">Shown if user has any of "view" and "edit" perms</div>
+      <div if-has-permission="'admin'">Shown if user has "admin" perm</div>
+      <div if-has-permission="['add', 'delete', 'publish']">Shown if user any of "add", "delete" and "publish" perms</div>
     </div>
 
 
