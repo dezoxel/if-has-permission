@@ -5,10 +5,14 @@
 
     beforeEach(module('ifHasPermission'));
 
-    it('has sinon support',  function() {
-      var stub = sinon.stub().returns(25);
+    beforeEach(inject(function($controller) {
+      this.userPermissions = {this: 'is', user: 'permissions'};
 
-      expect(stub()).to.equal(25);
+      this.ctrl = $controller('MainController', {userPermissions: this.userPermissions});
+    }));
+
+    it('stores userPermissions as the property',  function() {
+      expect(this.ctrl.userPermissions).to.deep.equal(this.userPermissions);
     });
   });
 })();
