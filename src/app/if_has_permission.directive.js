@@ -3,44 +3,64 @@
 
   angular
     .module('ifHasPermission')
-    .directive('ifHasPermission', function(ngIfDirective, userPermissions) {
-      var ngIfDirective = ngIfDirective[0];
+    .controller('ifHasPermissionController', function($scope) {
+      var vm = this;
 
-      function has(userPerms, requiredPerms) {
-        if (typeof requiredPerms === 'string') {
-          return hasOne(userPerms, requiredPerms);
+      function _toPermsList(permsString) {
+        var value = $scope.$eval(permsString);
 
-        } else if (requiredPerms instanceof Array) {
-
-          return requiredPerms.some(function(perm) {
-            return hasOne(userPerms, perm);
-          });
+        if (value instanceof Array) {
+          return value;
+        } else if (typeof value === 'string') {
+          return [value];
+        } else {
+          return [];
         }
       }
 
-      function hasOne(userPerms, perm) {
-        return userPerms.indexOf(perm) !== -1;
-      }
+      vm.has = function(userPerms, requiredPermsExpr) {
+        var requiredPerms = _toPermsList(requiredPermsExpr);
 
-      function evalRequiredPermissions(scope, attr) {
-        return scope.$eval(attr.ifHasPermission);
-      }
+        return this.isAllowedToAnyOf(requiredPerms, userPerms);
+      };
+
+      vm.isAllowedToAnyOf = function(requiredPerms, userPerms) {
+        if (!(requiredPerms instanceof Array)) {
+          return false;
+        }
+
+        return requiredPerms.some(function(perm) {
+          return vm.isAllowedTo(perm, userPerms);
+        }, this);
+      };
+
+      vm.isAllowedTo = function(permission, userPerms) {
+        if (userPerms instanceof Array) {
+          return userPerms.indexOf(permission) !== -1;
+        }
+
+        return false;
+      };
+    })
+    .directive('ifHasPermission', function(ngIfDirective, userPermissions) {
+      ngIfDirective = ngIfDirective[0];
 
       return {
         transclude: ngIfDirective.transclude,
         priority: ngIfDirective.priority - 1,
         terminal: ngIfDirective.terminal,
         restrict: ngIfDirective.restrict,
-        link: function($scope, $element, $attr) {
+        controller: 'ifHasPermissionController as vm',
+        link: function(scope, element, attr, ctrl) {
 
-          var ngIf = $attr.ngIf ? $scope.$eval($attr.ngIf) : true;
+          var ngIf = attr.ngIf ? scope.$eval(attr.ngIf) : true;
 
-          $attr.ngIf = function() {
+          attr.ngIf = function() {
             var userPerms = userPermissions.get();
-            var requiredPerms = evalRequiredPermissions($scope, $attr);
+            var requiredPermsExpr = attr.ifHasPermission;
 
-            return ngIf && has(userPerms, requiredPerms);
-          }
+            return ngIf && ctrl.has(userPerms, requiredPermsExpr);
+          };
 
           ngIfDirective.link.apply(null, arguments);
         }

@@ -14,9 +14,11 @@
     "inject": false,
     "module": false,
     "describe": false,
-    "beforeEach": false,
     "it": false,
     "expect": false,
-    "sinon": false
+    "beforeEach": false,
+    "afterEach": false,
+    "sinon": false,
+    "context": false
   }
 }
