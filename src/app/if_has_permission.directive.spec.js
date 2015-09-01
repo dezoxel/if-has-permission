@@ -164,22 +164,22 @@ describe('ifHasPermission', function () {
     context('given valid arguments', function() {
 
       it('uses isAllowedToAnyOf() as the algorithm', function() {
-        ctrl.has(this.userPermissions, "'view'");
+        ctrl.has(this.userPermissions, "view");
 
         expect(ctrl.isAllowedToAnyOf).to.have.been.called;
       });
 
-      context('when permissions expr is string with single quotes', function() {
+      context('when permissions expr is string', function() {
         it('interprets expr as a single permission', function(){
-          ctrl.has(this.userPermissions, "'add'");
+          ctrl.has(this.userPermissions, "add");
 
           expect(ctrl.isAllowedToAnyOf).to.have.been.calledWith(['add'], this.userPermissions);
         });
       });
 
-      context('when permissions expr is an array inside string', function() {
+      context('when permissions expr is an array', function() {
         it('interprets expr as the list of permissions', function(){
-          ctrl.has(this.userPermissions, "['view', 'delete']");
+          ctrl.has(this.userPermissions, ['view', 'delete']);
 
           expect(ctrl.isAllowedToAnyOf).to.have.been.calledWith(['view', 'delete'], this.userPermissions);
         });
@@ -189,12 +189,9 @@ describe('ifHasPermission', function () {
     context('given invalid arguments', function() {
 
       var specs = [
-        {context: 'string w/o single quotes', permsExpr: 'add'},
-        {context: 'empty string', permsExpr: ''},
         {context: 'null', permsExpr: null},
         {context: 'undefined', permsExpr: undefined},
         {context: 'any object', permsExpr: {hello: 'world'}},
-        {context: 'the raw array', permsExpr: [1,2,3]},
         {context: 'any number', permsExpr: 123}
       ];
 

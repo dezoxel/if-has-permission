@@ -3,7 +3,7 @@
 
   angular
     .module('ifHasPermission')
-    .controller('ifHasPermissionController', function($scope) {
+    .controller('ifHasPermissionController', function() {
       var vm = this;
 
       function _toPermsList(permsExpr) {
