@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  - '0.10'
+install:
+  - npm install -g npm@2
+  - npm install -g bower gulp
+  - npm install
+  - bower install
+script:
+  - gulp test
+sudo: false
