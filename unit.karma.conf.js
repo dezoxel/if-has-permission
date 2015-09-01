@@ -52,7 +52,7 @@ module.exports = function(config) {
 
     preprocessors: {
       'src/**/*.html': ['ng-html2js'],
-      'src/app/**/!(*spec).js': ['coverage']
+      'src/app/!(*spec).js': ['coverage']
     },
 
     reporters: ['coverage', 'mocha'],
