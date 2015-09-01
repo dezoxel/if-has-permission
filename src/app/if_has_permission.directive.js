@@ -6,13 +6,11 @@
     .controller('ifHasPermissionController', function($scope) {
       var vm = this;
 
-      function _toPermsList(permsString) {
-        var value = $scope.$eval(permsString);
-
-        if (value instanceof Array) {
-          return value;
-        } else if (typeof value === 'string') {
-          return [value];
+      function _toPermsList(permsExpr) {
+        if (permsExpr instanceof Array) {
+          return permsExpr;
+        } else if (typeof permsExpr === 'string') {
+          return [permsExpr];
         } else {
           return [];
         }
@@ -51,16 +49,14 @@
         terminal: ngIfDirective.terminal,
         restrict: ngIfDirective.restrict,
         controller: 'ifHasPermissionController as vm',
+        scope: {},
         link: function(scope, element, attr, ctrl) {
 
-          var ngIf = attr.ngIf ? scope.$eval(attr.ngIf) : true;
+          scope.$watch(attr.ifHasPermission, function(requiredPermsExpr) {
+            scope.currentAccess = ctrl.has(userPermissions.get(), requiredPermsExpr);
+          });
 
-          attr.ngIf = function() {
-            var userPerms = userPermissions.get();
-            var requiredPermsExpr = attr.ifHasPermission;
-
-            return ngIf && ctrl.has(userPerms, requiredPermsExpr);
-          };
+          attr.ngIf = 'currentAccess';
 
           ngIfDirective.link.apply(null, arguments);
         }
