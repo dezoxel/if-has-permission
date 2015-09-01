@@ -51,10 +51,7 @@
         controller: 'ifHasPermissionController as vm',
         scope: {},
         link: function(scope, element, attr, ctrl) {
-
-          scope.$watch(attr.ifHasPermission, function(requiredPermsExpr) {
-            scope.currentAccess = ctrl.has(userPermissions.get(), requiredPermsExpr);
-          });
+          scope.currentAccess = ctrl.has(userPermissions.get(), scope.$eval(attr.ifHasPermission));
 
           attr.ngIf = 'currentAccess';
 
