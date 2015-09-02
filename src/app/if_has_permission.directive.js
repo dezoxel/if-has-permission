@@ -27,7 +27,7 @@
       }
 
       function _optimizeExpr(str) {
-        return str.replace(/\&/g, '&&').replace(/\|/g, '||').replace(/\'/g, '');
+        return str.replace(/\&+/g, '&&').replace(/\|+/g, '||').replace(/\'/g, '');
       }
 
       function _toPermsHash(array) {
@@ -39,10 +39,21 @@
       }
 
       vm.evalBoolPermission = function(expr, perms) {
+        if (typeof expr !== 'string'  || !(perms instanceof Array)) {
+          return false;
+        }
+
         var cleanExpr = _optimizeExpr(expr);
         var permsHash = _toPermsHash(perms);
 
-        return $parse(cleanExpr)(permsHash);
+        var result;
+        try {
+          result = Boolean($parse(cleanExpr)(permsHash));
+        } catch (e) {
+          result = false;
+        }
+
+        return result;
       };
 
       vm.has = function(userPerms, requiredPermsExpr) {
