@@ -37,9 +37,17 @@
       <div class="row">User has 'ban' permission: <span if-has-permission="'ban'">YES</span></div>
 
       <div class="row"><h3>Array permission</h3></div>
-      <div class="row">User has on of ['add', 'view'] permissions: <span if-has-permission="['add', 'view']">YES</span></div>
-      <div class="row">User has on of ['ban', 'edit'] permissions: <span if-has-permission="['ban', 'edit']">YES</span></div>
-      <div class="row">User has on of ['ban', 'publish'] permissions: <span if-has-permission="['ban', 'publish']">YES</span></div>
+      <div class="row">User has any of ['add', 'view'] permissions: <span if-has-permission="['add', 'view']">YES</span></div>
+      <div class="row">User has any of ['ban', 'edit'] permissions: <span if-has-permission="['ban', 'edit']">YES</span></div>
+      <div class="row">User has any of ['ban', 'publish'] permissions: <span if-has-permission="['ban', 'publish']">YES</span></div>
+
+      <div class="row"><h3>Boolean permission</h3></div>
+      <div class="row">User has access if "'add' & 'edit' | 'admin'" is true: <span if-has-permission="'add' & 'edit' | 'admin'">YES</span></div>
+      <div class="row">User has access if "'publish' | 'delete'" is true: <span if-has-permission="'publish' | 'delete'">YES</span></div>
+      <div class="row">User has access if "'view' & 'add' & 'delete' & 'edit'" is true: <span if-has-permission="'view' & 'add' & 'delete' & 'edit'">YES</span></div>
+      <div class="row">User has access if "'view' | 'add' | 'delete' & 'edit'" is true: <span if-has-permission="'view' | 'add' | 'delete' & 'edit'">YES</span></div>
+      <div class="row">User has access if "'admin' | 'publish'" is true: <span if-has-permission="'admin' | 'publish'">YES</span></div>
+      <div class="row">User has access if "'ban' & 'view'" is true: <span if-has-permission="'ban' & 'view'">YES</span></div>
     </div>
 
     <!-- build:js(src) scripts/vendor.js -->

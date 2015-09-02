@@ -3,20 +3,53 @@
 
   angular
     .module('ifHasPermission')
-    .controller('ifHasPermissionController', function() {
+    .controller('ifHasPermissionController', function($parse) {
       var vm = this;
 
       function _toPermsList(permsExpr) {
-        if (permsExpr instanceof Array) {
-          return permsExpr;
-        } else if (typeof permsExpr === 'string') {
-          return [permsExpr];
+        var requiredPerms = $parse(permsExpr)();
+
+        if (requiredPerms instanceof Array) {
+          return requiredPerms;
+        } else if (typeof requiredPerms === 'string') {
+          return [requiredPerms];
         } else {
           return [];
         }
       }
 
+      function _isBooleanExpr(str) {
+        if (typeof str !== 'string') {
+          return false;
+        }
+
+        return str.indexOf('&') !== -1 || str.indexOf('|') !== -1;
+      }
+
+      function _optimizeExpr(str) {
+        return str.replace(/\&/g, '&&').replace(/\|/g, '||').replace(/\'/g, '');
+      }
+
+      function _toPermsHash(array) {
+        return array.reduce(function(hash, perm) {
+          hash[perm] = true;
+
+          return hash;
+        }, {});
+      }
+
+      vm.evalBoolPermission = function(expr, perms) {
+        var cleanExpr = _optimizeExpr(expr);
+        var permsHash = _toPermsHash(perms);
+
+        return $parse(cleanExpr)(permsHash);
+      };
+
       vm.has = function(userPerms, requiredPermsExpr) {
+        if(_isBooleanExpr(requiredPermsExpr)) {
+          return this.evalBoolPermission(requiredPermsExpr, userPerms);
+        }
+
         var requiredPerms = _toPermsList(requiredPermsExpr);
 
         return this.isAllowedToAnyOf(requiredPerms, userPerms);
@@ -51,7 +84,7 @@
         controller: 'ifHasPermissionController as vm',
         scope: {},
         link: function(scope, element, attr, ctrl) {
-          scope.currentAccess = ctrl.has(userPermissions.get(), scope.$eval(attr.ifHasPermission));
+          scope.currentAccess = ctrl.has(userPermissions.get(), attr.ifHasPermission);
 
           attr.ngIf = 'currentAccess';
 
