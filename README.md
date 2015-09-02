@@ -30,17 +30,33 @@ If browser was not opened, please open the [http://localhost:3000](http://localh
 ## Examples
 
 Enable element if user has specified permission:
-
 ```html
 <div if-has-permission="'add'">Add link here</div>
 <div if-has-permission="'delete'">Delete link here</div>
 ```
 
 Enable element if user has ANY of the specified permissions:
-
 ```html
 <div if-has-permission="['add', 'edit']">Member section</div>
 <div if-has-permission="['admin', 'moderator']">Manager section</div>
+```
+
+Enable element if user has specified permissions using boolean expression:
+```html
+<div if-has-permission="'add' & 'edit' | 'admin'">Writer section</div>
+<div if-has-permission="'view' | 'read' | 'publish' | 'admin'">Secret</div>
+```
+
+It is also possible write expr w/o single qoutes:
+```html
+<div if-has-permission="add & edit | admin">Secret</div>
+<div if-has-permission="view | read | publish | admin">Secret</div>
+```
+
+Logical (not bitwise) operators also supported:
+```html
+<div if-has-permission="add && edit || admin">Secret</div>
+<div if-has-permission="view || read || publish || admin">Secret</div>
 ```
 
 [travis-image]: https://travis-ci.org/dezoxel/if-has-permission.png?branch=master
