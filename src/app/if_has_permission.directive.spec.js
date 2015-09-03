@@ -20,19 +20,19 @@ describe('ifHasPermission', function () {
       this.userPermissions = ['add', 'edit', 'view'];
     });
 
-    describe('#isAllowedTo', function(){
+    describe('#hasPermission', function(){
 
       context('given valid arguments', function() {
 
         context('when permission is contained in the list', function() {
           it('allows access', function(){
-            expect(ctrl.isAllowedTo('edit', this.userPermissions)).to.equal(true);
+            expect(ctrl.hasPermission('edit', this.userPermissions)).to.equal(true);
           });
         });
 
         context('when permission is NOT contained in the list', function() {
           it('denies access', function(){
-            expect(ctrl.isAllowedTo('admin', this.userPermissions)).to.equal(false);
+            expect(ctrl.hasPermission('admin', this.userPermissions)).to.equal(false);
           });
         });
       });
@@ -51,7 +51,7 @@ describe('ifHasPermission', function () {
           specs.forEach(function(spec) {
             context('when ' + spec.context + ' specified', function() {
               it('denies access', function() {
-                expect(ctrl.isAllowedTo(spec.perm, ['view'])).to.equal(false);
+                expect(ctrl.hasPermission(spec.perm, ['view'])).to.equal(false);
               });
             });
           });
@@ -69,7 +69,7 @@ describe('ifHasPermission', function () {
           specs.forEach(function(spec) {
             context('when ' + spec.context + ' specified', function() {
               it('denies access', function() {
-                expect(ctrl.isAllowedTo('view', spec.perms)).to.equal(false);
+                expect(ctrl.hasPermission('view', spec.perms)).to.equal(false);
               });
             });
           });
@@ -77,42 +77,42 @@ describe('ifHasPermission', function () {
       });
     });
 
-    describe('#isAllowedToAnyOf', function() {
+    describe('#hasAnyPermissionFrom', function() {
       context('given valid arguments', function() {
 
         context('when user has all permissions from the list', function() {
           it('allows access', function() {
-            expect(ctrl.isAllowedToAnyOf(['add', 'view'], this.userPermissions)).to.equal(true);
+            expect(ctrl.hasAnyPermissionFrom(['add', 'view'], this.userPermissions)).to.equal(true);
           });
         });
 
         context('when user has a few permissions from the list', function() {
           it('allows access', function() {
-            expect(ctrl.isAllowedToAnyOf(['add', 'view', 'delete', 'publish'], this.userPermissions)).to.equal(true);
+            expect(ctrl.hasAnyPermissionFrom(['add', 'view', 'delete', 'publish'], this.userPermissions)).to.equal(true);
           });
         });
 
         context('when user has only one permission from the list', function() {
           it('allows access', function() {
-            expect(ctrl.isAllowedToAnyOf(['delete', 'view', 'publish'], this.userPermissions)).to.equal(true);
+            expect(ctrl.hasAnyPermissionFrom(['delete', 'view', 'publish'], this.userPermissions)).to.equal(true);
           });
         });
 
         context('when user doesnt have any of the required permissions', function() {
           it('denies access', function() {
-            expect(ctrl.isAllowedToAnyOf(['delete', 'ban', 'publish'], this.userPermissions)).to.equal(false);
+            expect(ctrl.hasAnyPermissionFrom(['delete', 'ban', 'publish'], this.userPermissions)).to.equal(false);
           });
         });
 
         context('when user permissions is empty', function() {
           it('denies access', function() {
-            expect(ctrl.isAllowedToAnyOf(['delete', 'view', 'publish'], [])).to.equal(false);
+            expect(ctrl.hasAnyPermissionFrom(['delete', 'view', 'publish'], [])).to.equal(false);
           });
         });
 
         context('when required permissions is empty', function() {
           it('denies access', function() {
-            expect(ctrl.isAllowedToAnyOf([], this.userPermissions)).to.equal(false);
+            expect(ctrl.hasAnyPermissionFrom([], this.userPermissions)).to.equal(false);
           });
         });
       });
@@ -131,7 +131,7 @@ describe('ifHasPermission', function () {
           specs.forEach(function(spec) {
             context('when ' + spec.context + ' specified', function() {
               it('denies access', function() {
-                expect(ctrl.isAllowedToAnyOf(spec.perms, ['view'])).to.equal(false);
+                expect(ctrl.hasAnyPermissionFrom(spec.perms, ['view'])).to.equal(false);
               });
             });
           });
@@ -141,7 +141,7 @@ describe('ifHasPermission', function () {
           specs.forEach(function(spec) {
             context('when ' + spec.context + ' specified', function() {
               it('denies access', function() {
-                expect(ctrl.isAllowedToAnyOf(['view'], spec.perms)).to.equal(false);
+                expect(ctrl.hasAnyPermissionFrom(['view'], spec.perms)).to.equal(false);
               });
             });
           });
@@ -149,20 +149,20 @@ describe('ifHasPermission', function () {
       });
     });
 
-    describe('#evalBoolPermission', function() {
+    describe('#hasBoolPermission', function() {
       context('given valid arguments', function() {
-        function evalBoolPermissionSpecs(specs) {
+        function hasBoolPermissionSpecs(specs) {
           specs.forEach(function(spec) {
             context('user ' + spec.context + ' permissions', function() {
               it('evals to ' + spec.result, function() {
-                expect(ctrl.evalBoolPermission(spec.expr, this.userPermissions)).to.equal(spec.result);
+                expect(ctrl.hasBoolPermission(spec.expr, this.userPermissions)).to.equal(spec.result);
               });
             });
           });
         }
 
         describe('two operands, OR', function() {
-          evalBoolPermissionSpecs([
+          hasBoolPermissionSpecs([
             {context: 'has two',        expr: "'add' | 'edit'", result: true},
             {context: 'has one of two', expr: "'add' | 'publish'", result: true},
             {context: 'has no such',    expr: "'ban' | 'publish'", result: false}
@@ -170,7 +170,7 @@ describe('ifHasPermission', function () {
         });
 
         describe('two operands, AND', function() {
-          evalBoolPermissionSpecs([
+          hasBoolPermissionSpecs([
             {context: 'has two',        expr: "'add' & 'edit'", result: true},
             {context: 'has one of two', expr: "'add' & 'publish'", result: false},
             {context: 'has no such',    expr: "'ban' & 'publish'", result: false}
@@ -178,7 +178,7 @@ describe('ifHasPermission', function () {
         });
 
         describe('three operands, OR', function() {
-          evalBoolPermissionSpecs([
+          hasBoolPermissionSpecs([
             {context: 'has three',        expr: "'add' | 'edit' | 'view'", result: true},
             {context: 'has two of three', expr: "'add' | 'view' | 'publish'", result: true},
             {context: 'has one of three', expr: "'add' | 'publish' | 'admin'", result: true},
@@ -187,7 +187,7 @@ describe('ifHasPermission', function () {
         });
 
         describe('three operands, AND', function() {
-          evalBoolPermissionSpecs([
+          hasBoolPermissionSpecs([
             {context: 'has three',        expr: "'add' & 'edit' & 'view'", result: true},
             {context: 'has two of three', expr: "'add' & 'view' & 'publish'", result: false},
             {context: 'has one of three', expr: "'add' & 'publish' & 'admin'", result: false},
@@ -196,7 +196,7 @@ describe('ifHasPermission', function () {
         });
 
         describe('three operands, OR - AND', function() {
-          evalBoolPermissionSpecs([
+          hasBoolPermissionSpecs([
             {context: 'has three',            expr: "'add' | 'edit' & 'view'", result: true},
             {context: 'has first two',        expr: "'add' | 'view' & 'publish'", result: true},
             {context: 'has first and third',  expr: "'add' | 'publish' & 'view'", result: true},
@@ -206,7 +206,7 @@ describe('ifHasPermission', function () {
         });
 
         describe('three operands, AND - OR', function() {
-          evalBoolPermissionSpecs([
+          hasBoolPermissionSpecs([
             {context: 'has three',            expr: "'add' & 'edit' | 'view'", result: true},
             {context: 'has first two',        expr: "'add' & 'view' | 'publish'", result: true},
             {context: 'has first and third',  expr: "'add' & 'publish' | 'view'", result: true},
@@ -216,19 +216,19 @@ describe('ifHasPermission', function () {
         });
 
         it('works w/o single quotes', function() {
-          expect(ctrl.evalBoolPermission('add & edit | view', this.userPermissions)).to.equal(true);
+          expect(ctrl.hasBoolPermission('add & edit | view', this.userPermissions)).to.equal(true);
         });
 
         it('works w/ logical &&', function() {
-          expect(ctrl.evalBoolPermission('add && edit | view', this.userPermissions)).to.equal(true);
+          expect(ctrl.hasBoolPermission('add && edit | view', this.userPermissions)).to.equal(true);
         });
 
         it('works w/ logical ||', function() {
-          expect(ctrl.evalBoolPermission('add & edit || view', this.userPermissions)).to.equal(true);
+          expect(ctrl.hasBoolPermission('add & edit || view', this.userPermissions)).to.equal(true);
         });
 
         it('works w/o logical operators', function() {
-          expect(ctrl.evalBoolPermission('add', this.userPermissions)).to.equal(true);
+          expect(ctrl.hasBoolPermission('add', this.userPermissions)).to.equal(true);
         });
       });
 
@@ -247,7 +247,7 @@ describe('ifHasPermission', function () {
           specs.forEach(function(spec) {
             context('when ' + spec.context + ' specified', function() {
               it('evals to false', function() {
-                expect(ctrl.evalBoolPermission(spec.arg, this.userPermissions)).to.equal(false);
+                expect(ctrl.hasBoolPermission(spec.arg, this.userPermissions)).to.equal(false);
               });
             });
           });
@@ -265,7 +265,7 @@ describe('ifHasPermission', function () {
           specs.forEach(function(spec) {
             context('when ' + spec.context + ' specified', function() {
               it('evals to false', function() {
-                expect(ctrl.evalBoolPermission("'add' | 'view'", spec.perms)).to.equal(false);
+                expect(ctrl.hasBoolPermission("'add' | 'view'", spec.perms)).to.equal(false);
               });
             });
           });
@@ -276,28 +276,28 @@ describe('ifHasPermission', function () {
     describe('#has', function(){
 
       beforeEach(function() {
-        sinon.stub(ctrl, 'isAllowedToAnyOf');
+        sinon.stub(ctrl, 'hasAnyPermissionFrom');
       });
 
       afterEach(function() {
-        ctrl.isAllowedToAnyOf.restore();
+        ctrl.hasAnyPermissionFrom.restore();
       });
 
       context('given valid arguments', function() {
 
         context('when permissions expr is a string and not a boolean', function() {
-          it('uses isAllowedToAnyOf() as the algorithm', function() {
+          it('uses hasAnyPermissionFrom() as the algorithm', function() {
             ctrl.has(this.userPermissions, "'view'");
 
-            expect(ctrl.isAllowedToAnyOf).to.have.been.called;
+            expect(ctrl.hasAnyPermissionFrom).to.have.been.called;
           });
         });
 
         context('when permissions expr is an array', function() {
-          it('uses isAllowedToAnyOf() as the algorithm', function() {
+          it('uses hasAnyPermissionFrom() as the algorithm', function() {
             ctrl.has(this.userPermissions, "['view', 'ban']");
 
-            expect(ctrl.isAllowedToAnyOf).to.have.been.called;
+            expect(ctrl.hasAnyPermissionFrom).to.have.been.called;
           });
         });
 
@@ -305,7 +305,7 @@ describe('ifHasPermission', function () {
           it('interprets expr as a single permission', function(){
             ctrl.has(this.userPermissions, "'add'");
 
-            expect(ctrl.isAllowedToAnyOf).to.have.been.calledWith(['add'], this.userPermissions);
+            expect(ctrl.hasAnyPermissionFrom).to.have.been.calledWith(['add'], this.userPermissions);
           });
         });
 
@@ -313,23 +313,23 @@ describe('ifHasPermission', function () {
           it('interprets expr as the list of permissions', function(){
             ctrl.has(this.userPermissions, "['view', 'delete']");
 
-            expect(ctrl.isAllowedToAnyOf).to.have.been.calledWith(['view', 'delete'], this.userPermissions);
+            expect(ctrl.hasAnyPermissionFrom).to.have.been.calledWith(['view', 'delete'], this.userPermissions);
           });
         });
 
         context('when permissions expr contains & or |', function() {
           beforeEach(function() {
-            sinon.stub(ctrl, 'evalBoolPermission');
+            sinon.stub(ctrl, 'hasBoolPermission');
           });
 
           afterEach(function() {
-            ctrl.evalBoolPermission.restore();
+            ctrl.hasBoolPermission.restore();
           });
 
           it('interprets expr as the boolean permissions expr', function(){
             ctrl.has(this.userPermissions, "'add' & 'edit' | 'admin'");
 
-            expect(ctrl.evalBoolPermission).to.have.been.called;
+            expect(ctrl.hasBoolPermission).to.have.been.called;
           });
         });
       });
@@ -350,7 +350,7 @@ describe('ifHasPermission', function () {
             it('acts as empty permissions list', function(){
               ctrl.has(this.userPermissions, spec.permsExpr);
 
-              expect(ctrl.isAllowedToAnyOf).to.have.been.calledWith([], this.userPermissions);
+              expect(ctrl.hasAnyPermissionFrom).to.have.been.calledWith([], this.userPermissions);
             });
           });
         });

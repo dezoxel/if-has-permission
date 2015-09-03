@@ -18,18 +18,23 @@
         }
       }
 
-      function _isBooleanExpr(str) {
-        if (typeof str !== 'string') {
+      function _isBooleanPerm(expr) {
+        if (typeof expr !== 'string') {
           return false;
         }
 
-        return str.indexOf('&') !== -1 || str.indexOf('|') !== -1;
+        return expr.indexOf('&') !== -1 || expr.indexOf('|') !== -1;
       }
 
-      function _optimizeExpr(str) {
-        return str.replace(/\&+/g, '&&').replace(/\|+/g, '||').replace(/\'/g, '');
+      // 1. We make support both, bitwise and logical operators (|, ||, &, &&)
+      // 2. Convert to logical operators (&& ||) because angular uses "|" as filter separator
+      // 3. Remove single quotes, because it is not possible to parse it correctly
+      function _normalize(expr) {
+        return expr.replace(/\&+/g, '&&').replace(/\|+/g, '||').replace(/\'/g, '');
       }
 
+      // needed for evaluating boolean expr
+      // ['add', 'edit'] -> {add: true, edit: true}
       function _toPermsHash(array) {
         return array.reduce(function(hash, perm) {
           hash[perm] = true;
@@ -38,45 +43,42 @@
         }, {});
       }
 
-      vm.evalBoolPermission = function(expr, perms) {
+      vm.hasBoolPermission = function(expr, perms) {
         if (typeof expr !== 'string'  || !(perms instanceof Array)) {
           return false;
         }
 
-        var cleanExpr = _optimizeExpr(expr);
+        var normalizedExpr = _normalize(expr);
         var permsHash = _toPermsHash(perms);
 
-        var result;
         try {
-          result = Boolean($parse(cleanExpr)(permsHash));
+          return Boolean($parse(normalizedExpr)(permsHash));
         } catch (e) {
-          result = false;
+          return false;
         }
-
-        return result;
       };
 
       vm.has = function(userPerms, requiredPermsExpr) {
-        if(_isBooleanExpr(requiredPermsExpr)) {
-          return this.evalBoolPermission(requiredPermsExpr, userPerms);
+        if(_isBooleanPerm(requiredPermsExpr)) {
+          return this.hasBoolPermission(requiredPermsExpr, userPerms);
         }
 
         var requiredPerms = _toPermsList(requiredPermsExpr);
 
-        return this.isAllowedToAnyOf(requiredPerms, userPerms);
+        return this.hasAnyPermissionFrom(requiredPerms, userPerms);
       };
 
-      vm.isAllowedToAnyOf = function(requiredPerms, userPerms) {
+      vm.hasAnyPermissionFrom = function(requiredPerms, userPerms) {
         if (!(requiredPerms instanceof Array)) {
           return false;
         }
 
         return requiredPerms.some(function(perm) {
-          return vm.isAllowedTo(perm, userPerms);
+          return vm.hasPermission(perm, userPerms);
         }, this);
       };
 
-      vm.isAllowedTo = function(permission, userPerms) {
+      vm.hasPermission = function(permission, userPerms) {
         if (userPerms instanceof Array) {
           return userPerms.indexOf(permission) !== -1;
         }
