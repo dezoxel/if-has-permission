@@ -29,25 +29,49 @@
       <div class="row">{{ main.userPermissions.get() }}</div>
 
       <div class="row"><h3>Single permission</h3></div>
-      <div class="row">User has 'add' permission: <span if-has-permission="'add'">YES</span></div>
-      <div class="row">User has 'view' permission: <span if-has-permission="'view'">YES</span></div>
-      <div class="row">User has 'edit' permission: <span if-has-permission="'edit'">YES</span></div>
-      <div class="row">User has 'delete' permission: <span if-has-permission="'delete'">YES</span></div>
-      <div class="row">User has 'publish' permission: <span if-has-permission="'publish'">YES</span></div>
-      <div class="row">User has 'ban' permission: <span if-has-permission="'ban'">YES</span></div>
+      <div class="row">Has 'add': <span if-has-permission="'add'">TRUE</span></div>
+      <div class="row">Has 'view': <span if-has-permission="'view'">TRUE</span></div>
+      <div class="row">Has 'edit': <span if-has-permission="'edit'">TRUE</span></div>
+      <div class="row">Has 'delete': <span if-has-permission="'delete'">TRUE</span></div>
+      <div class="row">Has 'publish': <span if-has-permission="'publish'">TRUE</span></div>
+      <div class="row">Has 'ban': <span if-has-permission="'ban'">TRUE</span></div>
 
       <div class="row"><h3>Array permission</h3></div>
-      <div class="row">User has any of ['add', 'view'] permissions: <span if-has-permission="['add', 'view']">YES</span></div>
-      <div class="row">User has any of ['ban', 'edit'] permissions: <span if-has-permission="['ban', 'edit']">YES</span></div>
-      <div class="row">User has any of ['ban', 'publish'] permissions: <span if-has-permission="['ban', 'publish']">YES</span></div>
+      <div class="row">Has any of ['add', 'view']: <span if-has-permission="['add', 'view']">TRUE</span></div>
+      <div class="row">Has any of ['ban', 'edit']: <span if-has-permission="['ban', 'edit']">TRUE</span></div>
+      <div class="row">Has any of ['ban', 'publish']: <span if-has-permission="['ban', 'publish']">TRUE</span></div>
 
       <div class="row"><h3>Boolean permission</h3></div>
-      <div class="row">User has access if "'add' & 'edit' | 'admin'" is true: <span if-has-permission="'add' & 'edit' | 'admin'">YES</span></div>
-      <div class="row">User has access if "'publish' | 'delete'" is true: <span if-has-permission="'publish' | 'delete'">YES</span></div>
-      <div class="row">User has access if "'view' & 'add' & 'delete' & 'edit'" is true: <span if-has-permission="'view' & 'add' & 'delete' & 'edit'">YES</span></div>
-      <div class="row">User has access if "'view' | 'add' | 'delete' & 'edit'" is true: <span if-has-permission="'view' | 'add' | 'delete' & 'edit'">YES</span></div>
-      <div class="row">User has access if "'admin' | 'publish'" is true: <span if-has-permission="'admin' | 'publish'">YES</span></div>
-      <div class="row">User has access if "'ban' & 'view'" is true: <span if-has-permission="'ban' & 'view'">YES</span></div>
+
+      <div class="row">
+        <span>'add' & 'edit' | 'admin':</span>
+        <span if-has-permission="'add' & 'edit' | 'admin'">TRUE</span>
+      </div>
+
+      <div class="row">
+        <span>'publish' | 'delete':</span>
+        <span if-has-permission="'publish' | 'delete'">TRUE</span>
+      </div>
+
+      <div class="row">
+         <span>'view' & 'add' & 'delete' & 'edit':</span>
+         <span if-has-permission="'view' & 'add' & 'delete' & 'edit'">TRUE</span>
+      </div>
+
+      <div class="row">
+        <span>'view' | 'add' | 'delete' & 'edit':</span>
+        <span if-has-permission="'view' | 'add' | 'delete' & 'edit'">TRUE</span>
+      </div>
+
+      <div class="row">
+        <span>'admin' | 'publish':</span>
+        <span if-has-permission="'admin' | 'publish'">TRUE</span>
+      </div>
+
+      <div class="row">
+        <span>'ban' & 'view':</span>
+        <span if-has-permission="'ban' & 'view'">TRUE</span>
+      </div>
     </div>
 
     <!-- build:js(src) scripts/vendor.js -->
